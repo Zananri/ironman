@@ -63,23 +63,23 @@
     </style>
 </head>
 <body>
-    @if(auth()->user()->role !== 'admin')
+    <?php if(auth()->user()->role !== 'admin'): ?>
     <script>
-        window.location.href = "{{ url('/errors/404') }}";
+        window.location.href = "<?php echo e(url('/errors/404')); ?>";
     </script>
-@endif
+<?php endif; ?>
     <div class="sidebar">
         <a href="/admin">Dashboard</a>
-        <a href="{{ url('/admin/detail-staff') }}" class="active">Kelola Akun</a>
+        <a href="<?php echo e(url('/admin/detail-staff')); ?>" class="active">Kelola Akun</a>
     </div>
     <div class="content">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Halaman Admin</a>
                 <div class="d-flex align-items-center ms-auto">
-                    <h6>Selamat Datang, {{ auth()->user()->name }}</h6>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
-                        @csrf
+                    <h6>Selamat Datang, <?php echo e(auth()->user()->name); ?></h6>
+                    <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" class="d-inline">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="btn btn-secondary">Logout</button>
                     </form>
                 </div>
@@ -99,19 +99,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($staffs as $staff)
+                    <?php $__currentLoopData = $staffs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $staff): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td>{{ $staff->name }}</td>
-                            <td>{{ $staff->email }}</td>
+                            <td><?php echo e($staff->name); ?></td>
+                            <td><?php echo e($staff->email); ?></td>
                             <td>
-                                <form action="{{ route('staff.destroy', $staff->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
+                                <form action="<?php echo e(route('staff.destroy', $staff->id)); ?>" method="POST" style="display:inline;">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('DELETE'); ?>
                                     <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                 </form>
                             </td>
                         </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
@@ -126,20 +126,48 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('staff.store') }}" method="post" enctype="multipart/form-data">
-                        @csrf
+                    <form action="<?php echo e(route('staff.store')); ?>" method="post" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
                        
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" id="name" name="name" required value="{{old('name')}}">
+                            <input type="text" class="form-control <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" placeholder="Name" id="name" name="name" required value="<?php echo e(old('name')); ?>">
                         </div>
                         <div class="input-group mb-3">
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email" id="email" name="email" required value="{{old('email')}}">
+                            <input type="email" class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" placeholder="Email" id="email" name="email" required value="<?php echo e(old('email')); ?>">
                         </div>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control @error('no_hp') is-invalid @enderror" placeholder="Nomor Telp" id="no_hp" name="no_hp" required value="{{old('no_hp')}}">
+                            <input type="text" class="form-control <?php $__errorArgs = ['no_hp'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" placeholder="Nomor Telp" id="no_hp" name="no_hp" required value="<?php echo e(old('no_hp')); ?>">
                         </div>
                         <div class="input-group mb-3">
-                            <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" id="password" name="password" required>
+                            <input type="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" placeholder="Password" id="password" name="password" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Buat</button>
                         <button class="btn btn-primary"><a href="/admin/detail-staff" style="color: white; text-decoration: none;">Back</a></button>
@@ -151,13 +179,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        @if(session('success'))
+        <?php if(session('success')): ?>
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
-                text: '{{ session('success') }}',
+                text: '<?php echo e(session('success')); ?>',
             });
-        @endif
+        <?php endif; ?>
     </script>
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\ukk-app\resources\views/admin/detail-staff.blade.php ENDPATH**/ ?>

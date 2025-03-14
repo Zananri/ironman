@@ -63,6 +63,11 @@
     </style>
 </head>
 <body>
+    <?php if(auth()->user()->role !== 'admin'): ?>
+    <script>
+        window.location.href = "<?php echo e(url('/errors/404')); ?>";
+    </script>
+<?php endif; ?>
     <div class="sidebar">
         <a href="/admin">Dashboard</a>
         <a href="<?php echo e(url('/admin/detail-staff')); ?>" class="active">Kelola Akun</a>

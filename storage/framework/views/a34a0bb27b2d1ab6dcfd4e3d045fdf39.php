@@ -71,19 +71,19 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    @if(!auth()->check() || auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
+    <?php if(!auth()->check() || auth()->user()->role === 'admin' || auth()->user()->role === 'staff'): ?>
         <script>
-            window.location.href = "{{ url('/errors/404') }}";
+            window.location.href = "<?php echo e(url('/errors/403')); ?>";
         </script>
-    @endif
+    <?php endif; ?>
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Pengaduan Masyarakat</a>
-            <h6>Selamat Datang, {{ auth()->user()->name }}</h6>
-            <img src="{{ auth()->user()->image ? asset('storage/' . auth()->user()->image) : 'https://via.placeholder.com/400' }}" alt="Foto Profil">
+            <h6>Selamat Datang, <?php echo e(auth()->user()->name); ?></h6>
+            <img src="<?php echo e(auth()->user()->image ? asset('storage/' . auth()->user()->image) : 'https://via.placeholder.com/400'); ?>" alt="Foto Profil">
             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#laporanModal">Laporkan</button>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline ms-2"> <!-- Added ms-2 class for margin -->
-                @csrf
+            <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" class="d-inline ms-2"> <!-- Added ms-2 class for margin -->
+                <?php echo csrf_field(); ?>
                 <button type="submit" class="btn btn-secondary">Logout</button>
             </form>
         </div>
@@ -96,9 +96,9 @@
                     <select id="filter-province" class="form-control" name="province_id" required>
                         <option value="">Pilih Provinsi</option>
                         <option value="all">Semua Wilayah</option> <!-- Added option for Semua Wilayah -->
-                        @foreach($provinces as $province)
-                            <option value="{{ $province->id }}">{{ $province->name }}</option>
-                        @endforeach
+                        <?php $__currentLoopData = $provinces; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($province->id); ?>"><?php echo e($province->name); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -106,77 +106,79 @@
                 </div>
             </div>
         </form>
-        @if(session('success'))
+        <?php if(session('success')): ?>
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
-                        text: '{{ session('success') }}',
+                        text: '<?php echo e(session('success')); ?>',
                     });
                 });
             </script>
-        @endif
+        <?php endif; ?>
 
-        @if(session('login_success'))
+        <?php if(session('login_success')): ?>
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
                     Swal.fire({
                         icon: 'success',
                         title: 'Login Berhasil',
-                        text: '{{ session('login_success') }}',
+                        text: '<?php echo e(session('login_success')); ?>',
                     });
                 });
             </script>
-        @endif
+        <?php endif; ?>
 
         <div class="row d-flex flex-wrap" id="pengaduan-container">
-            @foreach($pengaduan as $p)
+            <?php $__currentLoopData = $pengaduan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div class="col-lg-4 col-md-6 col-12 d-flex"> <!-- Adjusted col-lg to 4 to fit 3 cards per row -->
                 <div class="card">
-                    <img src="{{ $p->gambar ? asset('storage/' . $p->gambar) : 'https://via.placeholder.com/400' }}" class="card-img-top" alt="Gambar Pengaduan">
+                    <img src="<?php echo e($p->gambar ? asset('storage/' . $p->gambar) : 'https://via.placeholder.com/400'); ?>" class="card-img-top" alt="Gambar Pengaduan">
                     <div class="card-body">
-                        <h6 class="card-title"><b>Nama: {{ $p->nama }}</b></h6>
-                        <p class="card-text"> Deskripsi: {{ Str::limit($p->deskripsi, 30, '...') }}</p>
-                        <p class="card-text">Tipe: {{ $p->type }}</p>
+                        <h6 class="card-title"><b>Nama: <?php echo e($p->nama); ?></b></h6>
+                        <p class="card-text"> Deskripsi: <?php echo e(Str::limit($p->deskripsi, 30, '...')); ?></p>
+                        <p class="card-text">Tipe: <?php echo e($p->type); ?></p>
 
                         <p class="card-text">Lokasi:
-                            {{ implode(', ', array_filter([
+                            <?php echo e(implode(', ', array_filter([
                                 $p->province->name ?? null, 
                                 $p->city->name ?? null, 
                                 $p->district->name ?? null, 
                                 $p->village->name ?? null
-                            ])) }}
+                            ]))); ?>
+
                         </p>
-                        <p class="card-text">Tanggal dibuat: {{ \Carbon\Carbon::parse($p->created_at)->format('d M Y H:i:s') }} WIB</p>
-                        @if($p->status == 'done' && $p->completed_at)
-                            <p class="card-text">Tanggal selesai: {{ \Carbon\Carbon::parse($p->completed_at)->format('d M Y H:i:s') }} WIB</p>
-                        @else
+                        <p class="card-text">Tanggal dibuat: <?php echo e(\Carbon\Carbon::parse($p->created_at)->format('d M Y H:i:s')); ?> WIB</p>
+                        <?php if($p->status == 'done' && $p->completed_at): ?>
+                            <p class="card-text">Tanggal selesai: <?php echo e(\Carbon\Carbon::parse($p->completed_at)->format('d M Y H:i:s')); ?> WIB</p>
+                        <?php else: ?>
                             <p class="card-text">Tanggal selesai: Belum tersedia</p>
-                        @endif                        <p class="card-text">
+                        <?php endif; ?>                        <p class="card-text">
                             Status: 
                             <span class="badge 
-                                {{ $p->status == 'pending' ? 'bg-warning' : 
+                                <?php echo e($p->status == 'pending' ? 'bg-warning' : 
                                    ($p->status == 'done' ? 'bg-success' : 
-                                   ($p->status == 'in_progress' ? 'bg-primary' : 'bg-danger')) }}">
-                                {{ $p->status }}
+                                   ($p->status == 'in_progress' ? 'bg-primary' : 'bg-danger'))); ?>">
+                                <?php echo e($p->status); ?>
+
                             </span>
                         </p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <a href="{{ route('dashboard.detail', $p->id) }}" class="btn btn-primary detail-btn" data-id="{{ $p->id }}">Selengkapnya</a> <!-- Added data-id attribute -->
+                            <a href="<?php echo e(route('dashboard.detail', $p->id)); ?>" class="btn btn-primary detail-btn" data-id="<?php echo e($p->id); ?>">Selengkapnya</a> <!-- Added data-id attribute -->
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-outline-danger vote-btn" data-id="{{ $p->id }}">
-                                    <i class="bi bi-heart"></i> Vote <span class="vote-count">{{ $p->votes }}</span>
+                                <button class="btn btn-outline-danger vote-btn" data-id="<?php echo e($p->id); ?>">
+                                    <i class="bi bi-heart"></i> Vote <span class="vote-count"><?php echo e($p->votes); ?></span>
                                 </button>
                                 <div class="ms-2 d-flex align-items-center">
-                                    <i class="bi bi-eye"></i> <span class="view-count">{{ $p->views }}</span>
+                                    <i class="bi bi-eye"></i> <span class="view-count"><?php echo e($p->views); ?></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>        
         
     </div>
@@ -190,18 +192,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('pengaduan.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}"> <!-- Tambahkan input hidden untuk user_id -->
+                    <form action="<?php echo e(route('pengaduan.store')); ?>" method="POST" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="user_id" value="<?php echo e(auth()->user()->id); ?>"> <!-- Tambahkan input hidden untuk user_id -->
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama</label>
                             <input type="text" class="form-control" name="nama" required>
                         </div>
                         <select id="province" class="form-control" name="province_id" required>
                             <option value="">Pilih Provinsi</option>
-                            @foreach($provinces as $province)
-                                <option value="{{ $province->id }}">{{ $province->name }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = $provinces; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($province->id); ?>"><?php echo e($province->name); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                         
                         <select id="city" class="form-control" name="city_id" disabled required>
@@ -348,7 +350,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                         }
                     })
                     .then(response => response.json())
@@ -403,7 +405,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                         }
                     })
                     .then(response => response.json())
@@ -422,3 +424,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\ukk-app\resources\views/dashboard/index.blade.php ENDPATH**/ ?>

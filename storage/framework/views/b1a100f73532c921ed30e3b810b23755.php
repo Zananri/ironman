@@ -34,4 +34,4 @@
     </div>
 </body>
 </html>
-<?php /**PATH C:\xampp\htdocs\ukk-app\resources\views\errors\404.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\xampp\htdocs\ukk-app\resources\views/errors/404.blade.php ENDPATH**/ ?>

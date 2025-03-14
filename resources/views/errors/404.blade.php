@@ -29,8 +29,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>403</h1>
-        <p>forbidden</p>
+        <h1>404</h1>
+        <p>NOT FOUND</p>
     </div>
 </body>
 </html>

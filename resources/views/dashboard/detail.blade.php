@@ -65,6 +65,11 @@
     </style>
 </head>
 <body>
+    @if(!auth()->check() || auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
+    <script>
+        window.location.href = "{{ url('/errors/404') }}";
+    </script>
+@endif
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Pengaduan Masyarakat</a>
