@@ -1,0 +1,1 @@
+<?php /**PATH C:\xampp\htdocs\ukk-app\resources\views\layouts\main.blade.php ENDPATH**/ ?>
